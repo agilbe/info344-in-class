@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>a web server</title>
+</head>
+
+<body>
+    <h2>a useful website</h2>
+    <p>
+        <span id="hello">Who are you?</span>
+    </p>
+    <input type="text" name="name" id="name">
+    <input type="submit" value="Submit" id="button" onclick="sayHello()">
+    <br/><br/>
+    <div id="meminfo"></div>
+
+
+</body>
+
+<script>
+    function sayHello() {
+        var name = document.getElementById("name").value;
+        fetch('http://localhost:4000/hello?name=' + name).then(function(response) {
+            return response.text();
+            }).then(function(data) {
+                var greeter = document.getElementById("hello");
+                greeter.innerHTML = data;
+            });
+
+    }
+
+    function getMem() {
+        fetch('http://localhost:4000/memory').then(function(response){
+            return response.text();
+        }).then(function(data){
+            var display = document.getElementById("meminfo");
+            display.innerHTML = data;
+        });
+    }
+
+    window.setInterval(getMem, 1000);
+
+</script>
+
+
+
+</html>
