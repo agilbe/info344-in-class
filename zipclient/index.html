@@ -6,18 +6,86 @@
 
 <body>
     <h2>a useful website</h2>
-    <p>
+    <!--<p>
         <span id="hello">Who are you?</span>
     </p>
     <input type="text" name="name" id="name">
     <input type="submit" value="Submit" id="button" onclick="sayHello()">
     <br/><br/>
-    <div id="meminfo"></div>
+    <div id="meminfo"></div>-->
+
+    <div id="main"><input type="text" name="city" id="city">
+        <input type="submit" value="Submit" id="button" onclick="getZips()">
+    </div>
+    <div id="stateoptions"></div>
+    <div id="zipoptions"></div>
+    <br/><br/>
+    <div id="cityinfo"></div>
 
 
 </body>
 
 <script>
+    function getZips(){
+        var city = document.getElementById("city").value;
+        fetch('http://localhost:4000/zips/' + city).then(function(response){
+            return response.text();
+        }).then(function(data){
+            var cityList = data;
+            var cityObj = JSON.parse(cityList);
+            document.getElementById("cityinfo").innerHTML = cityList;
+            var stateSet = new Set();
+            var zipSet = new Set();
+            for (var i = 0; i < cityObj.length; i++){
+                stateSet.add(cityObj[i]["State"]);
+                zipSet.add(cityObj[i]["Code"]);
+            }
+            document.getElementById("stateoptions").innerHTML="Select state: ";
+            var select = document.createElement("select");
+            document.getElementById("stateoptions").appendChild(select);
+            for (let state of stateSet) {
+                var opt = state;
+                var el = document.createElement("option");
+                el.textContent = opt;
+                el.value = opt;
+                select.appendChild(el);
+            }
+            document.getElementById("zipoptions").innerHTML="Select zip: ";
+            var zipselect = document.createElement("select");
+            document.getElementById("zipoptions").appendChild(zipselect);
+            for (let zip of zipSet) {
+                var zipopt = zip;
+                var zipel = document.createElement("option");
+                zipel.textContent = zipopt;
+                zipel.value = zipopt;
+                zipselect.appendChild(zipel);
+            }
+            zipselect.onchange = function(e) {
+                //replace cityinfo with items that only contain selected zip, zipselect.value
+                var zipList = [];
+                for (let city of cityObj) {
+                    console.log(city);
+                    if (city["Code"] == zipselect.value) {
+                        zipList.push(JSON.stringify(city));
+                    } 
+                }
+                document.getElementById("cityinfo").innerHTML = zipList
+            };
+            select.onchange = function(e) {
+                //replace cityinfo with items that only contain selected zip, zipselect.value
+                var stateList = [];
+                for (let city of cityObj) {
+                    console.log(city);
+                    if (city["State"] == select.value) {
+                        stateList.push(JSON.stringify(city));
+                    } 
+                }
+                document.getElementById("cityinfo").innerHTML = stateList
+            };
+            
+        });
+    }
+    
     function sayHello() {
         var name = document.getElementById("name").value;
         fetch('http://localhost:4000/hello?name=' + name).then(function(response) {
@@ -38,7 +106,7 @@
         });
     }
 
-    window.setInterval(getMem, 1000);
+    //window.setInterval(getMem, 1000);
 
 </script>
 
