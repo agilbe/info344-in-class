@@ -65,7 +65,6 @@
                 //replace cityinfo with items that only contain selected zip, zipselect.value
                 var zipList = [];
                 for (let city of cityObj) {
-                    console.log(city);
                     if (city["Code"] == zipselect.value) {
                         zipList.push(JSON.stringify(city));
                     } 
@@ -76,7 +75,6 @@
                 //replace cityinfo with items that only contain selected zip, zipselect.value
                 var stateList = [];
                 for (let city of cityObj) {
-                    console.log(city);
                     if (city["State"] == select.value) {
                         stateList.push(JSON.stringify(city));
                     } 
